@@ -4,6 +4,9 @@ from ..models.solution import NoSolution, Solution
 from ..models.node import Node
 
 
+def h_func(node):
+    pass
+
 class GreedyBestFirstSearch:
     @staticmethod
     def search(grid: Grid) -> Solution:
@@ -18,10 +21,34 @@ class GreedyBestFirstSearch:
         # Initialize a node with the initial position
         node = Node("", grid.start, 0)
 
-        # Initialize the explored dictionary to be empty
+        frontier = PriorityQueueFrontier()
+        frontier.add(node, h_func(node)) # VER
+
+        # Initialize the explored dictionary
         explored = {} 
+
+        explored[node.state] = node.cost
         
-        # Add the node to the explored dictionary
-        explored[node.state] = True
-        
+        # Parte principal GBFS
+        while True:
+            if frontier.is_empty():  # Si la frontera esta vacia, no hay solucion
+                return NoSolution(explored)
+            
+            n = frontier.pop()
+
+            if n.state == grid.end:
+                return Solution(n, explored)
+            
+            successors = grid.get_neighbours(n.state)
+            for dato in successors.values():
+                s_prima = dato
+                c_prima = n.cost + grid.get_cost(s_prima) # VER
+            
+                if s_prima not in explored or :  # VER ESTA PARTE
+                    n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=n, action=None)
+
+
+
+
+
         return NoSolution(explored)
