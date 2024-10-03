@@ -5,6 +5,7 @@ from ..models.node import Node
 
 
 def h_func(node):
+    # se debe devolver un numero
     pass
 
 class GreedyBestFirstSearch:
@@ -22,11 +23,10 @@ class GreedyBestFirstSearch:
         node = Node("", grid.start, 0)
 
         frontier = PriorityQueueFrontier()
-        frontier.add(node, h_func(node)) # VER
+        frontier.add(node, h_func(node))
 
         # Initialize the explored dictionary
         explored = {} 
-
         explored[node.state] = node.cost
         
         # Parte principal GBFS
@@ -40,15 +40,14 @@ class GreedyBestFirstSearch:
                 return Solution(n, explored)
             
             successors = grid.get_neighbours(n.state)
+
             for dato in successors.values():
                 s_prima = dato
                 c_prima = n.cost + grid.get_cost(s_prima) # VER
             
-                if s_prima not in explored or :  # VER ESTA PARTE
-                    n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=n, action=None)
+                if s_prima not in explored or c_prima < explored[s_prima]:
+                    n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=dato, action=None, estimated_distance=c_prima)
+                    explored[s_prima] = c_prima
+                    frontier.add(n_prima, h_func(n_prima))
 
-
-
-
-
-        return NoSolution(explored)
+            return NoSolution(explored)
