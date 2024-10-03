@@ -4,12 +4,13 @@ from ..models.solution import NoSolution, Solution
 from ..models.node import Node
 
 
-def h_func(node):
-    # se debe devolver un numero
-    pass
+def h_func(grid: Grid, node: Node):
+    result = ((node.state[0] - grid.end[0])**2 + (node.state[1] - grid.end[1])**2)**0.5
+    return result
 
 class GreedyBestFirstSearch:
     @staticmethod
+
     def search(grid: Grid) -> Solution:
         """Find path between two points in a grid using Greedy Best First Search
 
@@ -23,7 +24,7 @@ class GreedyBestFirstSearch:
         node = Node("", grid.start, 0)
 
         frontier = PriorityQueueFrontier()
-        frontier.add(node, h_func(node))
+        frontier.add(node, h_func(grid, node))
 
         # Initialize the explored dictionary
         explored = {} 
@@ -48,4 +49,4 @@ class GreedyBestFirstSearch:
                 if s_prima not in explored or c_prima < explored[s_prima]:
                     n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=n, action=None)
                     explored[s_prima] = c_prima
-                    frontier.add(n_prima, h_func(n_prima))
+                    frontier.add(n_prima, h_func(grid, n_prima))
