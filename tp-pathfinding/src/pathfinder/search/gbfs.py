@@ -49,5 +49,3 @@ class GreedyBestFirstSearch:
                     n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=dato, action=None, estimated_distance=c_prima)
                     explored[s_prima] = c_prima
                     frontier.add(n_prima, h_func(n_prima))
-
-            return NoSolution(explored)
