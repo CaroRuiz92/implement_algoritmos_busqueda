@@ -44,7 +44,7 @@ class GreedyBestFirstSearch:
 
             for dato in successors.values():
                 s_prima = dato
-                c_prima = n.cost + grid.get_cost(s_prima) # VER
+                c_prima = n.cost + grid.get_cost(s_prima)
             
                 if s_prima not in explored or c_prima < explored[s_prima]:
                     n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=n, action=None)

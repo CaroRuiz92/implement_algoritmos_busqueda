@@ -3,6 +3,9 @@ from ..models.frontier import PriorityQueueFrontier
 from ..models.solution import NoSolution, Solution
 from ..models.node import Node
 
+def h_func(grid: Grid, node: Node):
+    result = ((node.state[0] - grid.end[0])**2 + (node.state[1] - grid.end[1])**2)**0.5
+    return result
 
 class AStarSearch:
     @staticmethod
@@ -18,10 +21,30 @@ class AStarSearch:
         # Initialize a node with the initial position
         node = Node("", grid.start, 0)
 
-        # Initialize the explored dictionary to be empty
+        frontier = PriorityQueueFrontier()
+        frontier.add(node, h_func(grid, node) + node.cost)
+
+        # Initialize the explored dictionary
         explored = {} 
+        explored[node.state] = node.cost
         
-        # Add the node to the explored dictionary
-        explored[node.state] = True
-        
-        return NoSolution(explored)
+        # Parte principal A*
+        while True:
+            if frontier.is_empty():  # Si la frontera esta vacia, no hay solucion
+                return NoSolution(explored)
+            
+            n = frontier.pop()
+
+            if n.state == grid.end:
+                return Solution(n, explored)
+            
+            successors = grid.get_neighbours(n.state)
+
+            for dato in successors.values():
+                s_prima = dato
+                c_prima = n.cost + grid.get_cost(s_prima)
+            
+                if s_prima not in explored or c_prima < explored[s_prima]:
+                    n_prima = Node("", s_prima, n.cost + grid.get_cost(s_prima), parent=n, action=None)
+                    explored[s_prima] = c_prima
+                    frontier.add(n_prima, h_func(grid, n_prima) + n_prima.cost)
