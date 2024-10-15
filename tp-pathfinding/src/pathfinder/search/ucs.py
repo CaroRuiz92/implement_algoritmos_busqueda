@@ -12,7 +12,7 @@ class UniformCostSearch:
 
         # Initialize the reached dictionary with the initial state
         reached = {} #diccionario de estados
-        reached[node.state] = True
+        reached[node.state] = node.cost
 
         # Return if the node contains a goal state
 
@@ -20,8 +20,8 @@ class UniformCostSearch:
         # Initialize the frontier with the initial node
         # In this example, the frontier is a queue
         frontier = PriorityQueueFrontier()
-        frontier.add(node)
-        alcanzados = {}
+        frontier.add(node,node.cost) # el nodo inicial con costo 0
+        alcanzados = {} # almacena los estados alcanzados con su costo
 
         while True:
 
@@ -39,10 +39,10 @@ class UniformCostSearch:
 
             for accion in successors: #recorro los posibles casos
                 new_state = successors[accion]
-                if new_state not in reached: #me fijo que no este en los visitados
-                    new_node = Node("", new_state,
-                                    node.cost + grid.get_cost(new_state),
-                                    parent=node, action=accion)
-
+                new_cost = node.cost + grid.get_cost(new_state) # costo acumulado
                
-                if s not in alcanzados or new_node < alcanzados[s]:
+               # si no alcanzamos este estado antes, o si el nuevo costo es menor
+                if new_state not in alcanzados or new_cost < alcanzados[new_state]:
+                    new_node = Node("",new_state,new_cost,parent=node,action=accion)
+                    alcanzados[new_state]= new_cost # actualizamos el costo minimo 
+                    frontier.add(new_node,new_cost) # encolamos el nuevo nodo con su costo
