@@ -99,5 +99,21 @@ class HillClimbingReset(LocalSearch):
 
 class Tabu(LocalSearch):
     """Algoritmo de busqueda tabu."""
+    def solve(self, problem: OptProblem, max_iter: int):
+        actual = problem.init
+        mejor = actual
+        tabu = []
+        problem.niters = 0
 
-    # COMPLETAR
+        while problem.niters < max_iter:
+            # accion = ?? -> definir accion
+            sucesor = problem.result(actual, tabu)
+            if problem.obj_val(mejor) < problem.obj_val(sucesor):
+                mejor = sucesor
+            tabu.append(sucesor)
+
+            # mejorar performance tabu
+
+            actual = sucesor
+            problem.niters += 1
+        return mejor
