@@ -5,8 +5,7 @@ LocalSearch representa un algoritmo de busqueda local general.
 Las subclases que se encuentran en este modulo son:
 
 * HillClimbing: algoritmo de ascension de colinas. Se mueve al sucesor con
-mejor valor objetivo, y los empates se resuelvan de forma aleatoria.
-Ya viene implementado.
+mejor valor objetivo. Ya viene implementado.
 
 * HillClimbingReset: algoritmo de ascension de colinas de reinicio aleatorio.
 No viene implementado, se debe completar.
@@ -17,9 +16,8 @@ No viene implementado, se debe completar.
 
 
 from __future__ import annotations
-from problem import OptProblem
-from random import choice
 from time import time
+from problem import OptProblem
 
 
 class LocalSearch:
@@ -62,20 +60,12 @@ class HillClimbing(LocalSearch):
 
         while True:
 
-            # Determinar las acciones que se pueden aplicar
-            # y las diferencias en valor objetivo que resultan
-            diff = problem.val_diff(actual)
+            # Buscamos la acción que genera el sucesor con mayor valor objetivo
+            act, succ_val = problem.max_action(actual)
 
-            # Buscar las acciones que generan el mayor incremento de valor obj
-            max_acts = [act for act, val in diff.items() if val ==
-                        max(diff.values())]
-
-            # Elegir una accion aleatoria
-            act = choice(max_acts)
-
-            # Retornar si estamos en un optimo local 
-            # (diferencia de valor objetivo no positiva)
-            if diff[act] <= 0:
+            # Retornar si estamos en un maximo local:
+            # el valor objetivo del sucesor es menor o igual al del estado actual
+            if succ_val <= value:
 
                 self.tour = actual
                 self.value = value
@@ -84,18 +74,15 @@ class HillClimbing(LocalSearch):
                 return
 
             # Sino, nos movemos al sucesor
-            else:
-
-                actual = problem.result(actual, act)
-                value = value + diff[act]
-                self.niters += 1
+            actual = problem.result(actual, act)
+            value = succ_val
+            self.niters += 1
 
 
 class HillClimbingReset(LocalSearch):
     """Algoritmo de ascension de colinas con reinicio aleatorio."""
 
     # COMPLETAR
-
 
 
 def max_action(problem: OptProblem, state, tabu) -> tuple[list, float]:

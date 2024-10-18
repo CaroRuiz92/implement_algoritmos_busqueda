@@ -10,7 +10,7 @@ def parse() -> ArgumentParser:
     """
     # Inicializamos el parser
     parser = ArgumentParser(
-        prog='tsp',
+        prog='python main.py',
         description='This program solves the TSP with different local search \
                      algorithms.',
     )
