@@ -72,8 +72,7 @@ class OptProblem:
         """
         raise NotImplementedError
     
-    def max_action_tabu(self, state: State, tabu: list)-> tuple[Action, float]:
-        pass
+    
 
 class TSP(OptProblem):
     """Subclase que representa al Problema del Viajante (TSP).
