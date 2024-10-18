@@ -97,21 +97,29 @@ class HillClimbingReset(LocalSearch):
     # COMPLETAR
 
 
+
+def max_action(problem: OptProblem, state, tabu) -> tuple[list, float]:
+        dic = {}
+        
+
 class Tabu(LocalSearch):
+
     """Algoritmo de busqueda tabu."""
-    def solve(self, problem: OptProblem, max_iter: int, tabu_size: int):
+    def solve(self, problem: OptProblem):
         actual = problem.init
         mejor = actual
         tabu = []
         problem.niters = 0
 
+        max_iter = 15
+        tabu_size = 10
+
         while problem.niters < max_iter:
-            accion = problem.max_action_tabu(actual, tabu)
+            accion = max_action(problem, actual, tabu)
             sucesor = problem.result(actual, accion)
             if problem.obj_val(mejor) < problem.obj_val(sucesor):
                 mejor = sucesor
-            
-            tabu.append(sucesor)
+                tabu.append(sucesor)
             if len(tabu) > tabu_size:
                 tabu.pop(0)
 
