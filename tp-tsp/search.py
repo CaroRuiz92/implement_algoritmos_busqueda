@@ -113,36 +113,73 @@ class HillClimbingReset(LocalSearch):
             total_reinicios += 1
         
         fin = time()
-        self.time = inicio-fin
+        self.time = fin-inicio
         
+###########################
 
-
-
-def max_action(problem: OptProblem, state, tabu) -> tuple[list, float]:
-        dic = {}
+def max_action_tabu(problem: OptProblem, state: list[int], tabu: list[tuple[int, int]]) -> tuple[tuple[int, int], float]:
+    """ Adaptación de funcion max_action original """
+    value = problem.obj_val(state)
+    max_act = None
+    max_val = float("-inf")
+    
+    for a in problem.actions(state):
+        i, j = a
+        v1 = state[i] + 1  # origen de i
+        v2 = state[i + 1] + 1  # destino de i
+        v3 = state[j] + 1  # origen de j
+        v4 = state[j + 1] + 1  # destino de j
+        distl1l2 = problem.G.get_edge_data(v1, v2)['weight']
+        distl3l4 = problem.G.get_edge_data(v3, v4)['weight']
+        distl1l3 = problem.G.get_edge_data(v1, v3)['weight']
+        distl2l4 = problem.G.get_edge_data(v2, v4)['weight']
         
+        succ_value = value + distl1l2 + distl3l4 - distl1l3 - distl2l4
+        
+        if succ_value > max_val:
+            max_act = a
+            max_val = succ_value
+
+    # Verificar si max_act está en tabu antes de devolver
+    if max_act in tabu:
+        return None
+
+    return max_act, max_val
+
+###########################
 
 class Tabu(LocalSearch):
+    def __init__(self, max_iter: int = 20, tabu_size: int = 20) -> None:
+        super().__init__()
+        self.max_iter = max_iter
+        self.tabu_size = tabu_size
 
-    """Algoritmo de busqueda tabu."""
     def solve(self, problem: OptProblem):
-        actual = problem.init
-        mejor = actual
+        
+        start = time()
+
+        # Inicializar estado_actual antes de usarlo
+        estado_actual = problem.init
+        mejor = estado_actual
         tabu = []
-        problem.niters = 0
+        iterac = self.niters
 
-        max_iter = 15
-        tabu_size = 10
+        while iterac < self.max_iter:
+            while True:
+                acc, val_acc = max_action_tabu(problem, estado_actual, tabu)
+                sucesor = problem.result(estado_actual, acc)
 
-        while problem.niters < max_iter:
-            accion = max_action(problem, actual, tabu)
-            sucesor = problem.result(actual, accion)
-            if problem.obj_val(mejor) < problem.obj_val(sucesor):
-                mejor = sucesor
-                tabu.append(sucesor)
-            if len(tabu) > tabu_size:
-                tabu.pop(0)
+                
+                if problem.obj_val(mejor) < problem.obj_val(sucesor):
+                    mejor = sucesor
+                    tabu.append(acc)
+                    estado_actual = sucesor
 
-            actual = sucesor
-            problem.niters += 1
-        return mejor
+                    # REVER
+                    self.tour = estado_actual
+                    self.niters += 1
+                    end = time()
+                    self.time = end-start
+                    return
+
+            
