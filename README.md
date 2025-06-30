@@ -4,7 +4,7 @@ Este proyecto implementa y compara distintos algoritmos de búsqueda aplicados a
 
 ## 🔍 Algoritmos implementados
 
-- **UCS**, **BFS**, **DFS**, **A*** en `tp-pathfinding`
+- **UCS**, **BFS**, **DFS**, **GBFS**, **A*** en `tp-pathfinding`
 - **Búsqueda Tabú** aplicada al TSP en `tp-tsp`
 
 ## 🎮 ¿Cómo se ejecuta?
